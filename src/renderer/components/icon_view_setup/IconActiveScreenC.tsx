@@ -42,9 +42,9 @@ export default function IconActiveScreenC({
   console.log(oIcons);
   const items = oIconPage.aIcons.map((item, index) => {
     if (oIcons[item] && oIcons[item].sIconImagePath != '') {
-      return '../database/' + oIcons[item].sIconImagePath;
+      return 'icon://' + encodeURIComponent(oIcons[item].sIconImagePath);
     } else {
-      return '../database/' + 'default.bmp';
+      return 'icon://default.bmp';
     }
   });
   console.log(items);

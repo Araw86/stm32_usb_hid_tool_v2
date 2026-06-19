@@ -1,95 +1,56 @@
-// const { app, ipcMain, dialog } = require('electron');
+import fs from 'fs';
+import path from 'path';
 
-import { app, ipcMain, dialog, MessageBoxOptions } from 'electron'
-import {IpcMainInvokeEvent} from 'electron/main'
+import { ipcMain, dialog, BrowserWindow, OpenDialogOptions } from 'electron';
+import { IpcMainInvokeEvent } from 'electron/main';
 
-// const configurationfile = require('./utilities/configurationfile');
-// const filedownload = require('./utilities/filedownload');
-// const handlefiles = require('./utilities/handleFiles');
-// const handlesql = require('./utilities/handlesql');
-// const storeHandling = require('./utilities/storeHandling');
-// const docDetailsCheck = require('./utilities/docDetailsCheck');
+import { getUserDatabaseDir } from './iconPaths';
+import { refreshIconList } from './storeIcons';
 
+type IconAddResult =
+  | { ok: true; added: string[] }
+  | { ok: false; reason: 'cancelled' | 'error'; message?: string };
 
+function fIpcHandlers(): void {
+  ipcMain.handle('icon:add', async (event: IpcMainInvokeEvent): Promise<IconAddResult> => {
+    const parent = BrowserWindow.fromWebContents(event.sender);
+    const options: OpenDialogOptions = {
+      title: 'Add icon',
+      properties: ['openFile', 'multiSelections'],
+      filters: [{ name: 'Bitmap', extensions: ['bmp'] }],
+    };
+    const dlg = parent
+      ? await dialog.showOpenDialog(parent, options)
+      : await dialog.showOpenDialog(options);
 
-function fIpcHandlers():void {
-  /*data send from rendered will be returned to main */
-  // ipcMain.handle('config', (event:IpcMainInvokeEvent, data: any) => {
-  //   switch (data.type) {
-  //     /*get version */
-  //     case 0:
-  //       return app.getVersion();
-  //     /*load configuration */
-  //     case 1:
-  //       const oConfiguration = configurationfile.loadConfiguration();
-  //       return { sStatus: 'ok', oConfiguration: oConfiguration }
-  //     // return { sStatus: 'nok' }
-  //     /*store configuration */
-  //     case 2:
-  //       configurationfile.storeConfiguration(data.data);
-  //       return { sStatus: 'ok' }
-  //     /*path exuists */
-  //     case 3:
-  //       return handlefiles.pathExists(data.data)
-  //     /*load file */
-  //     case 4:
-  //       return handlefiles.loadFile(data.data);
+    if (dlg.canceled || dlg.filePaths.length === 0) {
+      return { ok: false, reason: 'cancelled' };
+    }
 
-  //     case 5:
-  //       return handlefiles.runFile(data.data);
+    const targetDir = getUserDatabaseDir();
+    fs.mkdirSync(targetDir, { recursive: true });
+    const added: string[] = [];
 
-  //     case 6:
-  //       return handlesql.runsql(data.data);
-  //     default:
-  //       return null;
-  //   }
-  // });
+    try {
+      for (const src of dlg.filePaths) {
+        const name = path.basename(src);
+        const dst = path.join(targetDir, name);
+        fs.copyFileSync(src, dst);
+        added.push(name);
+      }
+    } catch (err) {
+      console.error('icon:add copy failed', err);
+      return { ok: false, reason: 'error', message: String(err) };
+    }
 
-  // ipcMain.handle('docFiles', (event:IpcMainInvokeEvent, data:any) => {
-  //   switch (data.type) {
-  //     case 0:
-  //       return docDetailsCheck.checkFileStatDate(data.data)
-  //     case 1:
-  //       return docDetailsCheck.checkPdfMetaDate(data.data)
-  //     default:
-  //       return null;
-  //   }
-  // })
+    refreshIconList();
+    return { ok: true, added };
+  });
 
-  // ipcMain.handle('stores', (event:IpcMainInvokeEvent, data:any) => {
-  //   switch (data.type) {
-  //     case 0:
-  //       return storeHandling.addStore(data.data)
-  //     case 1:
-  //       return storeHandling.storeSet(data.data)
-  //     case 2:
-  //       return storeHandling.storeGet(data.data)
-  //     case 3:
-  //       return storeHandling.eraseStore(data.data)
-  //     default:
-  //       return null;
-  //   }
-  // })
-
-  // /*data send from rendered to main */
-  // ipcMain.on('write-message', (event:IpcMainInvokeEvent, data:any) => {
-  //   const webContents = event.sender
-  //   //console.log(event);
-  //   const dialogOpts: MessageBoxOptions = {
-  //     type: 'info',
-  //     buttons: ['Ok'],
-  //     title: 'button pressed',
-  //     message: 'button pressed',
-  //     detail: 'button was pressed in rendered message: ' + data
-  //   }
-  //   dialog.showMessageBox(dialogOpts);
-  // });
-  // /*data send from rendered to main */
-  // ipcMain.on('download-doc-start', async (event:IpcMainInvokeEvent, data:any) => {
-  //   const { type, name, address, location } = data
-  //   filedownload.manageDownload(type, name, address, location)
-  // });
-};
+  ipcMain.handle('icon:refresh', async () => {
+    return refreshIconList();
+  });
+}
 
 const ipcHandlers = fIpcHandlers;
 

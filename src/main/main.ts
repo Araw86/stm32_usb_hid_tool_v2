@@ -1,5 +1,21 @@
-import { app, session, dialog, BrowserWindow, Menu, Notification, MessageBoxOptions } from 'electron'
+import { app, session, dialog, BrowserWindow, Menu, Notification, MessageBoxOptions, protocol, net } from 'electron'
+import { pathToFileURL } from 'url'
 const path = require('path');
+
+import { resolveUserIconPath } from './iconPaths'
+
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'icon',
+    privileges: {
+      standard: true,
+      secure: true,
+      supportFetchAPI: true,
+      bypassCSP: true,
+      stream: true,
+    },
+  },
+])
 
 
 /*debug*/
@@ -92,6 +108,21 @@ async function createWindow() {
 // };
 
 app.on('ready',async () => {
+  protocol.handle('icon', (request) => {
+    try {
+      const url = new URL(request.url);
+      const raw = url.hostname
+        ? url.hostname + url.pathname
+        : url.pathname.replace(/^\/+/, '');
+      const name = decodeURIComponent(raw);
+      const filePath = resolveUserIconPath(name);
+      return net.fetch(pathToFileURL(filePath).toString());
+    } catch (err) {
+      console.error('icon:// protocol error', err);
+      return new Response('Not found', { status: 404 });
+    }
+  });
+
   createWindow();
   ipcHandlers();
   if (!app.isPackaged) {

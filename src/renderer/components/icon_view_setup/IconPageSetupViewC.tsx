@@ -52,9 +52,9 @@ export default function IconPageSetupViewC({
   console.log(oIconPage);
   const items = oIconPage.aIcons.map((item, index) => {
     if (oIcons[item] && oIcons[item].sIconImagePath != '') {
-      return '../database/' + oIcons[item].sIconImagePath;
+      return 'icon://' + encodeURIComponent(oIcons[item].sIconImagePath);
     } else {
-      return '../database/' + 'default.bmp';
+      return 'icon://default.bmp';
     }
   });
   const iconNames = oIconPage.aIcons.map((item, index) => {

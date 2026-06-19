@@ -47,5 +47,7 @@ contextBridge.exposeInMainWorld('ipc_handlers', {
   },
   ipcToDocFiles: (data:any) => {
     return ipcRenderer.invoke('docFiles', data)
-  }
+  },
+  iconAdd: () => ipcRenderer.invoke('icon:add'),
+  iconRefresh: () => ipcRenderer.invoke('icon:refresh'),
 });

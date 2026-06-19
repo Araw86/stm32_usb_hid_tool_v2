@@ -20,7 +20,7 @@ const IconSetupMenuC = (props: Props) => {
   const { open, nItemPos } = props;
   const [value, setValue] = React.useState(1);
   const [sImageName, setSImageName] = React.useState<string>('');
-  const IMAGE_BASE_PATH = '../database/';
+  const IMAGE_BASE_PATH = 'icon://';
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
@@ -129,7 +129,7 @@ const IconSetupMenuC = (props: Props) => {
               </Button>
               {sImageName != '' && (
                 <img
-                  src={IMAGE_BASE_PATH + sImageName}
+                  src={IMAGE_BASE_PATH + encodeURIComponent(sImageName)}
                   alt={sImageName}
                   loading="lazy"
                   style={{
@@ -172,7 +172,7 @@ const IconSetupMenuC = (props: Props) => {
               </Button>
               {sImageName != '' && (
                 <img
-                  src={IMAGE_BASE_PATH + sImageName}
+                  src={IMAGE_BASE_PATH + encodeURIComponent(sImageName)}
                   alt={sImageName}
                   loading="lazy"
                   style={{
