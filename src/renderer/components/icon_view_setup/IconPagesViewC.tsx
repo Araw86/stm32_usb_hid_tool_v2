@@ -62,7 +62,7 @@ const IconPagesViewC = (props: Props) => {
   };
 
   return (
-    <Box>
+    <Box sx={{ height: '100%', overflow: 'auto' }}>
       <RichTreeView
         items={treeItems}
         onItemClick={(event, itemId) => fOnItemClick(parseInt(itemId))}
