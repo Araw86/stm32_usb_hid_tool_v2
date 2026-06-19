@@ -35,7 +35,7 @@ let win: BrowserWindow | null;
 async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 1920,
+    width: 1500,
     height: 900,
     webPreferences: {
       nodeIntegration: true,

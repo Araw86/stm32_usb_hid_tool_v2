@@ -107,14 +107,14 @@ const KeyboardContainer: React.FC<KeyboardContainerProps> = () => {
         keyLayout={navLayout}
         keySpanMap={sideKeySpanMap}
       />
-      <KeyboardGridNumComponent
+      {/* <KeyboardGridNumComponent
         keyLayout={numpadLayout}
         keySpanMap={sideKeySpanMap}
       />
       <KeyboardGridComponent
         keyLayout={additionalLayout}
         keySpanMap={sideKeySpanMap}
-      />
+      /> */}
     </Box>
   );
 };

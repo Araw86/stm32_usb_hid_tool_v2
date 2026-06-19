@@ -6184,9 +6184,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stm32_usb_hid_tool@workspace:.":
+"stm32_usb_hid_tool_v2@workspace:.":
   version: 0.0.0-use.local
-  resolution: "stm32_usb_hid_tool@workspace:."
+  resolution: "stm32_usb_hid_tool_v2@workspace:."
   dependencies:
     "@electron/rebuild": ^4.0.1
     "@emotion/react": ^11.14.0
