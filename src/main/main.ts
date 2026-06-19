@@ -49,10 +49,18 @@ let win: BrowserWindow | null;
 
 
 async function createWindow() {
+  // In packaged builds the .exe icon (set by electron-builder from assets/icon.ico)
+  // becomes the window icon automatically. Override here only for dev so we don't
+  // see the default Electron icon while running `yarn start`.
+  const devIcon = !app.isPackaged
+    ? path.join(app.getAppPath(), 'assets', 'icon.ico')
+    : undefined;
+
   // Create the browser window.
   win = new BrowserWindow({
     width: 1500,
     height: 900,
+    icon: devIcon,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: true,
