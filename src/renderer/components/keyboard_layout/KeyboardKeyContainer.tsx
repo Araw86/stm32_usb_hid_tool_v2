@@ -1,10 +1,10 @@
 import React from 'react';
 
-/*redux import*/
-import { TypedUseSelectorHook, useSelector } from 'react-redux';
-import { RootState, store } from '../../store/storeRenderer';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/storeRenderer';
 import { KEYBOARD_KEY_ARRAY } from '../../../shared/config/imageArrayConf';
 import { Box, Typography } from '@mui/material';
+import KeyAnalogChartDialog from './KeyAnalogChartDialog';
 
 interface KeyboardKeyContainer {
   sKeyboardKey: string;
@@ -18,15 +18,35 @@ const KeyboardKeyContainer: React.FC<KeyboardKeyContainer> = ({
   const nKeyboardAnalogValue: number = useSelector((state: RootState) => {
     return state.keyboardKeysStateSlice.aKeyAnalogState[nKeyboardKeyId];
   });
-  const nKeyboardTresholdValue: number = useSelector((state: RootState) => {
-    return state.keyboardKeysStateSlice.aKeyTreshold[nKeyboardKeyId];
-  });
+
+  const [open, setOpen] = React.useState(false);
+
   return (
-    <Box>
-      <Typography>{sKeyboardKeyText}</Typography>
-      <Typography fontSize={'0.750rem'}>{nKeyboardAnalogValue}</Typography>
-      {/* <Typography fontSize={'0.500rem'}>{nKeyboardTresholdValue}</Typography> */}
-    </Box>
+    <>
+      <Box
+        onClick={() => setOpen(true)}
+        sx={{
+          width: '100%',
+          height: '100%',
+          cursor: 'pointer',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          '&:hover': { backgroundColor: 'action.hover' },
+          borderRadius: 1,
+        }}
+      >
+        <Typography>{sKeyboardKeyText}</Typography>
+        <Typography fontSize={'0.750rem'}>{nKeyboardAnalogValue}</Typography>
+      </Box>
+      <KeyAnalogChartDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        keyId={nKeyboardKeyId}
+        keyLabel={sKeyboardKeyText}
+      />
+    </>
   );
 };
 

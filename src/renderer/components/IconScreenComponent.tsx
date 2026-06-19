@@ -46,7 +46,7 @@ export default function IconScreenComponent({
   }
   items = items.map((item, index) => {
     if (aImages[index] != '') {
-      return '../database/' + aImages[index];
+      return 'icon://' + encodeURIComponent(aImages[index]);
     } else {
       return item;
     }

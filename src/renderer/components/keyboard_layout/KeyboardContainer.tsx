@@ -4,6 +4,7 @@ import { Key } from '@mui/icons-material';
 import KeyboardGridNumComponent from './KeyboardNumGridComponent';
 import KeyboardGridComponent from './KeyboardGridComponent';
 import KeyboardKeyContainer from './KeyboardKeyContainer';
+import KeyboardConnectionStatus from './KeyboardConnectionStatus';
 interface KeyboardContainerProps {}
 
 const mainKeyLayout: (string | null)[][] = [
@@ -98,23 +99,28 @@ const sideKeySpanMap: Record<string, number> = {
 
 const KeyboardContainer: React.FC<KeyboardContainerProps> = () => {
   return (
-    <Box sx={{ display: 'flex', alignItems: 'flex-start', padding: '20px' }}>
-      <KeyboardGridComponent
-        keyLayout={mainKeyLayout}
-        keySpanMap={mainKeySpanMap}
-      />
-      <KeyboardGridComponent
-        keyLayout={navLayout}
-        keySpanMap={sideKeySpanMap}
-      />
-      <KeyboardGridNumComponent
-        keyLayout={numpadLayout}
-        keySpanMap={sideKeySpanMap}
-      />
-      <KeyboardGridComponent
-        keyLayout={additionalLayout}
-        keySpanMap={sideKeySpanMap}
-      />
+    <Box sx={{ padding: '20px' }}>
+      <Box sx={{ mb: 1.5 }}>
+        <KeyboardConnectionStatus />
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+        <KeyboardGridComponent
+          keyLayout={mainKeyLayout}
+          keySpanMap={mainKeySpanMap}
+        />
+        <KeyboardGridComponent
+          keyLayout={navLayout}
+          keySpanMap={sideKeySpanMap}
+        />
+        {/* <KeyboardGridNumComponent
+          keyLayout={numpadLayout}
+          keySpanMap={sideKeySpanMap}
+        />
+        <KeyboardGridComponent
+          keyLayout={additionalLayout}
+          keySpanMap={sideKeySpanMap}
+        /> */}
+      </Box>
     </Box>
   );
 };

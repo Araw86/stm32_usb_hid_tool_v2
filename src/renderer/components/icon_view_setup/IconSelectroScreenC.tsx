@@ -5,6 +5,7 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import Box from '@mui/material/Box';
@@ -21,7 +22,7 @@ type Props = {
 const IconSelectroScreenC: React.FC<Props> = ({
   images,
   open: openProp = false,
-  basePath = '../database/',
+  basePath = 'icon://',
   onClose,
   onSelect,
 }) => {
@@ -41,6 +42,22 @@ const IconSelectroScreenC: React.FC<Props> = ({
     onClose?.();
   };
 
+  const handleAddIcon = async () => {
+    const api = (window as any).ipc_handlers;
+    if (!api?.iconAdd) {
+      console.error('iconAdd IPC not available');
+      return;
+    }
+    try {
+      const result = await api.iconAdd();
+      if (!result?.ok && result?.reason === 'error') {
+        console.error('iconAdd failed:', result.message);
+      }
+    } catch (err) {
+      console.error('iconAdd threw', err);
+    }
+  };
+
   return (
     <Dialog open={openProp} onClose={handleClose}>
       <AppBar position="sticky">
@@ -48,6 +65,14 @@ const IconSelectroScreenC: React.FC<Props> = ({
           <Typography variant="h6" sx={{ flex: 1 }}>
             Select Icon
           </Typography>
+          <Button
+            color="inherit"
+            startIcon={<AddIcon />}
+            onClick={handleAddIcon}
+            sx={{ mr: 1 }}
+          >
+            Add icon
+          </Button>
           <IconButton
             edge="end"
             color="inherit"
@@ -68,7 +93,7 @@ const IconSelectroScreenC: React.FC<Props> = ({
               const src =
                 name.startsWith('http') || name.startsWith('/')
                   ? name
-                  : `${basePath}${name}`;
+                  : `${basePath}${encodeURIComponent(name)}`;
               return (
                 <ImageListItem key={name} sx={{ cursor: 'pointer' }}>
                   <img

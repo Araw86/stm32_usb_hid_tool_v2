@@ -24,6 +24,33 @@ async function fUsbManager():Promise<void>{
 
 const HID_DATA_MESSAGE_SIZE = 511
 
+const KEY_STATE_FLUSH_INTERVAL_MS = 16; // ~60 Hz UI updates, regardless of HID rate
+let pendingKeyState: number[] | null = null;
+let lastDispatchedKeyState: number[] | null = null;
+let flushTimer: NodeJS.Timeout | null = null;
+
+function arraysEqual(a: number[] | null, b: number[] | null): boolean {
+  if (a === b) return true;
+  if (!a || !b || a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
+function scheduleKeyStateFlush(): void {
+  if (flushTimer !== null) return;
+  flushTimer = setTimeout(() => {
+    flushTimer = null;
+    const out = pendingKeyState;
+    pendingKeyState = null;
+    if (out && !arraysEqual(out, lastDispatchedKeyState)) {
+      lastDispatchedKeyState = out;
+      store.dispatch(setKeyAnalogState(out));
+    }
+  }, KEY_STATE_FLUSH_INTERVAL_MS);
+}
+
 
 console.log('usb library handle attach deatch')
 usb.on('attach',deviceAttached);// chec kif device was attached
@@ -214,12 +241,14 @@ function fHidSendImage3(image:Buffer){
 function fHidReceiveData(aData:any[]){
   switch(aData[0]){
     case 3: /* Physical key pressed received */
-      console.log(" Keyboard key received " );
+      // Coalesce: HID may arrive at 1 kHz, but we only need ~60 Hz of UI updates.
+      // Store the latest reading and let the flush timer dispatch it to redux/IPC.
       let aKeyAnalogValue = new Uint16Array(KEYBOARD_KEYS_LENGTH);
       for(let i=0;i<KEYBOARD_KEYS_LENGTH;i++){
         aKeyAnalogValue[i]=aData[(2*i)+1]+(aData[(2*i)+2]<<8);
       }
-      store.dispatch(setKeyAnalogState(Array.from(aKeyAnalogValue)));
+      pendingKeyState = Array.from(aKeyAnalogValue);
+      scheduleKeyStateFlush();
       break;
     case 4: /* Screen key pressed received */
       console.log(" Screen key received " );  
