@@ -1,8 +1,7 @@
 ## Tools needed
 
-1. cubemx to have database installed pan for path
-2. yean 3.6.1
-3. nodejs v18.16.0
+1. yean 3.6.1
+2. nodejs v24.15.0
 
 ## description
 
