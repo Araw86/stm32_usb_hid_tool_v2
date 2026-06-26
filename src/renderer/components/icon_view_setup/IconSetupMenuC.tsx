@@ -136,8 +136,7 @@ const IconSetupMenuC = (props: Props) => {
                     width: '50px',
                     height: 'auto',
                     borderRadius: 8,
-                    display: 'block',
-                    rotate: '180deg',
+                    display: 'block'
                   }}
                 />
               )}
@@ -179,8 +178,7 @@ const IconSetupMenuC = (props: Props) => {
                     width: '50px',
                     height: 'auto',
                     borderRadius: 8,
-                    display: 'block',
-                    rotate: '180deg',
+                    display: 'block'
                   }}
                 />
               )}
