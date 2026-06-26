@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import exec from 'child_process';
+import { ICON_GRID_SIZE } from '../../config/iconGridConfig';
 
 
 export interface IconPageInterface {
@@ -61,7 +62,7 @@ const initialState: IconStateInterface = {
 
   nActivePageId:0,
   
-  oIconPages:{0:{sPageName:"Root",bIsRootPage:true,aIcons:[0,0,0,0,0,0,0,0,0],aPages:[]}} as IconPageObjectInterface,
+  oIconPages:{0:{sPageName:"Root",bIsRootPage:true,aIcons:Array(ICON_GRID_SIZE).fill(0),aPages:[]}} as IconPageObjectInterface,
   oIcons:{} as IkonObjectInterface,
 
   nIdPageGenerator:1,
@@ -127,7 +128,7 @@ const iconStateSlice = createSlice({
           sPageName: payload.sIconName,
           bIsRootPage: false,
           nParentPageId: nActiveConfigPageId,
-          aIcons: [0,0,0,0,0,0,0,0,0],
+          aIcons: Array(ICON_GRID_SIZE).fill(0),
           aPages: [],
         }
 

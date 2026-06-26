@@ -7,6 +7,7 @@ import {
   setActiveIcons,
   setAllIcons,
 } from '../shared/redux/slices/iconStateSlice';
+import { ICON_GRID_SIZE } from '../shared/config/iconGridConfig';
 
 import { IMAGE_ARRAY_LENGTH } from '../shared/config/imageArrayConf';
 
@@ -29,9 +30,15 @@ export function initStoreIcons() {
   if (stoiredValue === undefined) {
     electronStore.set('iconState', JSON.stringify(iconState));
   } else {
-    store.dispatch(
-      setActiveIcons(JSON.parse(stoiredValue as string) as IconStateInterface)
-    );
+    const parsed = JSON.parse(stoiredValue as string) as IconStateInterface;
+    const firstPage = Object.values(parsed.oIconPages)[0];
+    const storedSlotCount = firstPage?.aIcons?.length ?? 0;
+    if (storedSlotCount !== ICON_GRID_SIZE) {
+      console.log(`Icon grid changed (stored ${storedSlotCount} → ${ICON_GRID_SIZE}), discarding saved state`);
+      electronStore.set('iconState', JSON.stringify(iconState));
+    } else {
+      store.dispatch(setActiveIcons(parsed));
+    }
   }
   console.log(saved);
   refreshIconList();

@@ -7,6 +7,7 @@ import CardMedia from '@mui/material/CardMedia';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/storeRenderer';
 import IconSetupMenuC from './IconSetupMenuC';
+import { ICON_GRID_COLS, ICON_GRID_SIZE } from '../../../shared/config/iconGridConfig';
 
 type Props = {
   imageAlt?: string;
@@ -52,51 +53,56 @@ export default function IconPageSetupViewC({
   const itemsInverted = [...items].reverse();
   const invertedIconNames = [...iconNames].reverse();
 
+  const gridColSize = Math.round(12 / ICON_GRID_COLS) as 1 | 2 | 3 | 4 | 6 | 12;
+
   return (
     <Box sx={{ width: '100%', maxWidth: 260, mx: 'auto' }}>
       <Grid container spacing={gap} alignItems="stretch">
-        {itemsInverted.map((src, idx) => (
-          <Grid size={4} key={8 - idx}>
-            <Card sx={{ aspectRatio: '1 / 1', height: '100%', position: 'relative' }}>
-              <CardActionArea
-                sx={{ height: '100%' }}
-                onClick={() => fHandleSelect(8 - idx)}
-              >
-                <CardMedia
-                  component="img"
-                  image={src}
-                  alt={`${imageAlt}-${8 - idx}`}
-                  sx={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover'
-                  }}
-                />
-                {invertedIconNames[idx] && (
-                  <Box
+        {itemsInverted.map((src, idx) => {
+          const dataIdx = (ICON_GRID_SIZE - 1) - idx;
+          return (
+            <Grid size={gridColSize} key={dataIdx}>
+              <Card sx={{ aspectRatio: '1 / 1', height: '100%', position: 'relative' }}>
+                <CardActionArea
+                  sx={{ height: '100%' }}
+                  onClick={() => fHandleSelect(dataIdx)}
+                >
+                  <CardMedia
+                    component="img"
+                    image={src}
+                    alt={`${imageAlt}-${dataIdx}`}
                     sx={{
-                      position: 'absolute',
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      px: 0.5,
-                      py: 0.25,
-                      background: 'rgba(0,0,0,0.55)',
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
                     }}
-                  >
-                    <Typography
-                      variant="caption"
-                      noWrap
-                      sx={{ color: 'common.white', display: 'block' }}
+                  />
+                  {invertedIconNames[idx] && (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        px: 0.5,
+                        py: 0.25,
+                        background: 'rgba(0,0,0,0.55)',
+                      }}
                     >
-                      {invertedIconNames[idx]}
-                    </Typography>
-                  </Box>
-                )}
-              </CardActionArea>
-            </Card>
-          </Grid>
-        ))}
+                      <Typography
+                        variant="caption"
+                        noWrap
+                        sx={{ color: 'common.white', display: 'block' }}
+                      >
+                        {invertedIconNames[idx]}
+                      </Typography>
+                    </Box>
+                  )}
+                </CardActionArea>
+              </Card>
+            </Grid>
+          );
+        })}
       </Grid>
       <IconSetupMenuC
         open={bDialogOpen}
