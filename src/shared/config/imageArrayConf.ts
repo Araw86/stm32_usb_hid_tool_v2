@@ -33,7 +33,7 @@ const KEYBOARD_KEY_ARRAY: KeyboardKeyArrayInterface = {
     'F11':{nKeyId:1, keyText:'F11'},
     'F12':{nKeyId:63, keyText:'F12'},
 
-     '`':{nKeyId:21, keyText:'`'},
+     '`':{nKeyId:12, keyText:'`'},
     '1':{nKeyId:8, keyText:'1'},
     '2':{nKeyId:2, keyText:'2'},
     '3':{nKeyId:4, keyText:'3'},
