@@ -53,6 +53,7 @@
     "webpack-cli": "^5.0.1"
   },
   "scripts": {
+    "postinstall": "node ./scripts/ensure-electron.js",
     "start": "electron .",
     "watch": "webpack --config webpack.dev.js --watch",
     "build_dev": "webpack --config webpack.dev.js",
