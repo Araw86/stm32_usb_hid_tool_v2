@@ -70,7 +70,6 @@ export default function IconPageSetupViewC({
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
-                    rotate: '180deg',
                   }}
                 />
                 {invertedIconNames[idx] && (

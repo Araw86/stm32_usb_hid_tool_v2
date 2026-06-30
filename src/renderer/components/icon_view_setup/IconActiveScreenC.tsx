@@ -50,7 +50,6 @@ export default function IconActiveScreenC({
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
-                    rotate: '180deg',
                   }}
                 />
               </CardActionArea>
