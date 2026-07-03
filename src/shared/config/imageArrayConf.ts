@@ -1,9 +1,10 @@
+import { ICON_GRID_SIZE } from "./iconGridConfig";
 
-const IMAGE_ARRAY_LENGTH = 9;
+const IMAGE_ARRAY_LENGTH = ICON_GRID_SIZE;
 
-const SCREEN_BUTTONS =9;
+const SCREEN_BUTTONS =ICON_GRID_SIZE+2;
 
-const IMAGE_ARRAY_BUTTON_MAPPING: number[] = [8, 7, 6, 5, 4, 3, 2, 1, 0];
+// const IMAGE_ARRAY_BUTTON_MAPPING: number[] = [9,8, 7, 6, 5, 4, 3, 2, 1, 0];
 
 
 const KEYBOARD_KEYS_LENGTH = 120;
@@ -33,7 +34,7 @@ const KEYBOARD_KEY_ARRAY: KeyboardKeyArrayInterface = {
     'F11':{nKeyId:1, keyText:'F11'},
     'F12':{nKeyId:63, keyText:'F12'},
 
-     '`':{nKeyId:21, keyText:'`'},
+     '`':{nKeyId:12, keyText:'`'},
     '1':{nKeyId:8, keyText:'1'},
     '2':{nKeyId:2, keyText:'2'},
     '3':{nKeyId:4, keyText:'3'},
@@ -144,4 +145,4 @@ const KEYBOARD_KEY_ARRAY: KeyboardKeyArrayInterface = {
     // 'FnJ':{nKeyId: 119, keyText:"FnJ"}
 };
 
-export { IMAGE_ARRAY_LENGTH ,SCREEN_BUTTONS,KEYBOARD_KEYS_LENGTH,KEYBOARD_KEY_ARRAY, IMAGE_ARRAY_BUTTON_MAPPING };
+export { IMAGE_ARRAY_LENGTH ,SCREEN_BUTTONS,KEYBOARD_KEYS_LENGTH,KEYBOARD_KEY_ARRAY };

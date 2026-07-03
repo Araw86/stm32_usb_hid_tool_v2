@@ -108,7 +108,13 @@ export function createMainListeners() {
       const icons = s.iconStateSlice?.oIconPages[nActivePageId]?.aIcons ?? [];
       console.log(icons)
       if (aFileList.length==0) return;
-
+      const nParentPageId = s.iconStateSlice?.oIconPages[nActivePageId]?.nParentPageId;
+      if(nParentPageId!==undefined){
+        /*this page have parrend send device to show back button*/
+        usbManager.fHidSendBackButton(true);
+      }else{
+        usbManager.fHidSendBackButton(false);
+      }
       icons.forEach((icon:number, index:number)=>{
         if(icon!=0){
           const iconPath= s.iconStateSlice?.oIcons[icon]?.sIconImagePath ?? '';

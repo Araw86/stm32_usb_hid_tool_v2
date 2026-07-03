@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import exec from 'child_process';
+import { ICON_GRID_SIZE } from '../../config/iconGridConfig';
 
 
 export interface IconPageInterface {
@@ -61,7 +62,7 @@ const initialState: IconStateInterface = {
 
   nActivePageId:0,
   
-  oIconPages:{0:{sPageName:"Root",bIsRootPage:true,aIcons:[0,0,0,0,0,0,0,0,0],aPages:[]}} as IconPageObjectInterface,
+  oIconPages:{0:{sPageName:"Root",bIsRootPage:true,aIcons:Array(ICON_GRID_SIZE).fill(0),aPages:[]}} as IconPageObjectInterface,
   oIcons:{} as IkonObjectInterface,
 
   nIdPageGenerator:1,
@@ -127,22 +128,22 @@ const iconStateSlice = createSlice({
           sPageName: payload.sIconName,
           bIsRootPage: false,
           nParentPageId: nActiveConfigPageId,
-          aIcons: [0,0,0,0,0,0,0,0,0],
+          aIcons: Array(ICON_GRID_SIZE).fill(0),
           aPages: [],
         }
 
         slice.oIcons[nNewIconId].nLinkedPageId=nNewPageId;
         slice.nPageChangeCounter++;
-        /* back icon */
-        const nBackIconId=generateIconId();
-        slice.oIcons[nBackIconId]={
-          sIconName: "Back",
-          sIconImagePath: "icon_back.bmp",
-          nLinkedPageId: 0,
-          sIconProgramPath: "",
-          bIconIsBack: true,
-        };
-        slice.oIconPages[nNewPageId].aIcons[0]=nBackIconId;
+        // /* back icon */
+        // const nBackIconId=generateIconId();
+        // slice.oIcons[nBackIconId]={
+        //   sIconName: "Back",
+        //   sIconImagePath: "icon_back.bmp",
+        //   nLinkedPageId: 0,
+        //   sIconProgramPath: "",
+        //   bIconIsBack: true,
+        // };
+        // slice.oIconPages[nNewPageId].aIcons[0]=nBackIconId;
         slice.oIconPages
 
       }
@@ -213,6 +214,20 @@ const iconStateSlice = createSlice({
       const nActivePageId=state.nActivePageId;
       const oActivePage=state.oIconPages[nActivePageId];
       if(nButtonPressed!=-1){
+        if(nButtonPressed==nIconPosition.length-2){
+          /* n-2 button is pressed, return button */
+          const nParentPageId=state.oIconPages[nActivePageId].nParentPageId;
+          if(nParentPageId!==undefined){
+            state.nActivePageId=nParentPageId;
+            state.nPageChangeCounter++;
+          }
+        }
+        if(nButtonPressed==nIconPosition.length-1){
+          /* n-1 button is pressed,go to main page */
+          state.nActivePageId=0;
+          state.nPageChangeCounter++;
+        }
+
         let nIconPressed = oActivePage.aIcons[nButtonPressed];
         console.log(nIconPressed)
         const oIconPressed=state.oIcons[nIconPressed];

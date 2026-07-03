@@ -256,6 +256,7 @@ function fHidReceiveData(aData:any[]){
       for(let i=0;i<SCREEN_BUTTONS;i++){
         aBtnPress[i]=aData[i+1];
       }
+      // console.log("Button data: " + SCREEN_BUTTONS + " " + aBtnPress);
       //todo add dispatch to iconStateSlice, function is missing
       store.dispatch(iconPress(Array.from(aBtnPress)));
       break;
@@ -287,9 +288,23 @@ function fHidSendEmptyImage(imageNumber:number){
   hidDevice.write(aCmd);
 }
 
+function fHidSendBackButton(backButton:boolean=true){
+  console.log('Send image2');
+  if(hidDevice==null){
+    console.log(`device not connected`);
+    return;
+  }
+  let aCmd = new Uint8Array(2);
+
+  aCmd[0]=3;
+  aCmd[1] = backButton ? 1 : 0;
+
+  hidDevice.write(aCmd);
+
+}
 // function fHidSendKey
 
 
-const usbManager = {fUsbManager,fHidSend,fUsbConnect,fUsbDisconnect,fHidSendImage,fHidSendImage2,fHidSendImage3,fHidSendEmptyImage};
+const usbManager = {fUsbManager,fHidSend,fUsbConnect,fUsbDisconnect,fHidSendImage,fHidSendImage2,fHidSendImage3,fHidSendEmptyImage,fHidSendBackButton};
 
 export default usbManager;

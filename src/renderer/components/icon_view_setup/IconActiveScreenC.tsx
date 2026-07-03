@@ -6,6 +6,7 @@ import CardActionArea from '@mui/material/CardActionArea';
 import CardMedia from '@mui/material/CardMedia';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/storeRenderer';
+import { ICON_GRID_COLS } from '../../../shared/config/iconGridConfig';
 
 type Props = {
   imageAlt?: string;
@@ -33,13 +34,11 @@ export default function IconActiveScreenC({
     }
   });
 
-  const itemsInverted = [...items].reverse();
-
   return (
     <Box sx={{ width: '100%', maxWidth: 260, mx: 'auto' }}>
-      <Grid container spacing={gap}>
-        {itemsInverted.map((src, idx) => (
-          <Grid size={4} key={idx}>
+      <Grid container columns={ICON_GRID_COLS} spacing={gap}>
+        {items.map((src, idx) => (
+          <Grid size={1} key={idx}>
             <Card sx={{ aspectRatio: '1 / 1', height: '100%' }}>
               <CardActionArea sx={{ height: '100%' }}>
                 <CardMedia
@@ -49,7 +48,11 @@ export default function IconActiveScreenC({
                   sx={{
                     width: '100%',
                     height: '100%',
+<<<<<<< HEAD
                     objectFit: 'cover',
+=======
+                    objectFit: 'cover'
+>>>>>>> update_icons_handling
                   }}
                 />
               </CardActionArea>

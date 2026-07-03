@@ -1,10 +1,9 @@
 import React from 'react';
 
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/storeRenderer';
 import { KEYBOARD_KEY_ARRAY } from '../../../shared/config/imageArrayConf';
 import { Box, Typography } from '@mui/material';
 import KeyAnalogChartDialog from './KeyAnalogChartDialog';
+import { registerAnalogRef } from './keyAnalogDisplay';
 
 interface KeyboardKeyContainer {
   sKeyboardKey: string;
@@ -15,9 +14,12 @@ const KeyboardKeyContainer: React.FC<KeyboardKeyContainer> = ({
 }) => {
   const nKeyboardKeyId = KEYBOARD_KEY_ARRAY[sKeyboardKey].nKeyId;
   const sKeyboardKeyText = KEYBOARD_KEY_ARRAY[sKeyboardKey].keyText;
-  const nKeyboardAnalogValue: number = useSelector((state: RootState) => {
-    return state.keyboardKeysStateSlice.aKeyAnalogState[nKeyboardKeyId];
-  });
+
+  const analogRef = React.useRef<HTMLSpanElement>(null);
+  React.useEffect(() => {
+    registerAnalogRef(nKeyboardKeyId, analogRef.current);
+    return () => registerAnalogRef(nKeyboardKeyId, null);
+  }, [nKeyboardKeyId]);
 
   const [open, setOpen] = React.useState(false);
 
@@ -38,7 +40,9 @@ const KeyboardKeyContainer: React.FC<KeyboardKeyContainer> = ({
         }}
       >
         <Typography>{sKeyboardKeyText}</Typography>
-        <Typography fontSize={'0.750rem'}>{nKeyboardAnalogValue}</Typography>
+        <Typography fontSize={'0.750rem'} component="span">
+          <span ref={analogRef}>0</span>
+        </Typography>
       </Box>
       <KeyAnalogChartDialog
         open={open}
@@ -50,4 +54,4 @@ const KeyboardKeyContainer: React.FC<KeyboardKeyContainer> = ({
   );
 };
 
-export default KeyboardKeyContainer;
+export default React.memo(KeyboardKeyContainer);

@@ -7,6 +7,7 @@ import CardMedia from '@mui/material/CardMedia';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/storeRenderer';
 import IconSetupMenuC from './IconSetupMenuC';
+import { ICON_GRID_COLS } from '../../../shared/config/iconGridConfig';
 
 type Props = {
   imageAlt?: string;
@@ -49,30 +50,27 @@ export default function IconPageSetupViewC({
   });
   const iconNames = oIconPage.aIcons.map((item) => oIcons[item]?.sIconName);
 
-  const itemsInverted = [...items].reverse();
-  const invertedIconNames = [...iconNames].reverse();
-
   return (
     <Box sx={{ width: '100%', maxWidth: 260, mx: 'auto' }}>
-      <Grid container spacing={gap} alignItems="stretch">
-        {itemsInverted.map((src, idx) => (
-          <Grid size={4} key={8 - idx}>
+      <Grid container columns={ICON_GRID_COLS} spacing={gap} alignItems="stretch">
+        {items.map((src, idx) => (
+          <Grid size={1} key={idx}>
             <Card sx={{ aspectRatio: '1 / 1', height: '100%', position: 'relative' }}>
               <CardActionArea
                 sx={{ height: '100%' }}
-                onClick={() => fHandleSelect(8 - idx)}
+                onClick={() => fHandleSelect(idx)}
               >
                 <CardMedia
                   component="img"
                   image={src}
-                  alt={`${imageAlt}-${8 - idx}`}
+                  alt={`${imageAlt}-${idx}`}
                   sx={{
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
                   }}
                 />
-                {invertedIconNames[idx] && (
+                {iconNames[idx] && (
                   <Box
                     sx={{
                       position: 'absolute',
@@ -89,7 +87,7 @@ export default function IconPageSetupViewC({
                       noWrap
                       sx={{ color: 'common.white', display: 'block' }}
                     >
-                      {invertedIconNames[idx]}
+                      {iconNames[idx]}
                     </Typography>
                   </Box>
                 )}
