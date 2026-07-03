@@ -48,11 +48,7 @@ export default function IconActiveScreenC({
                   sx={{
                     width: '100%',
                     height: '100%',
-<<<<<<< HEAD
                     objectFit: 'cover',
-=======
-                    objectFit: 'cover'
->>>>>>> update_icons_handling
                   }}
                 />
               </CardActionArea>
