@@ -10,10 +10,8 @@ import { iconPress, setActivePageId } from '../shared/redux/slices/iconStateSlic
 let hidDevice : any | null; 
 const TARGET_VID = 1155;
 const TARGET_PID = 22288;
-let usbListenersRegistered = false;
 
 async function fUsbManager():Promise<void>{
-  registerUsbListeners();
 
 
   // hidDevice.write([0x1]);
@@ -53,55 +51,10 @@ function scheduleKeyStateFlush(): void {
   }, KEY_STATE_FLUSH_INTERVAL_MS);
 }
 
-function registerUsbListeners(): void {
-  if (usbListenersRegistered) {
-    return;
-  }
 
-  console.log('usb library handle attach deatch')
-  usb.on('attach',deviceAttached);// chec kif device was attached
-  usb.on('detach',deviceDetach);//check if device was detached
-  usbListenersRegistered = true;
-}
-
-function unregisterUsbListeners(): void {
-  if (!usbListenersRegistered) {
-    return;
-  }
-
-  usb.off('attach',deviceAttached);
-  usb.off('detach',deviceDetach);
-  usbListenersRegistered = false;
-}
-
-async function shutdown(): Promise<void> {
-  unregisterUsbListeners();
-
-  if (flushTimer !== null) {
-    clearTimeout(flushTimer);
-    flushTimer = null;
-  }
-
-  pendingKeyState = null;
-  lastDispatchedKeyState = null;
-
-  if (hidDevice) {
-    hidDevice.removeListener('error',fHidError);
-    hidDevice.removeListener('data',fHidReceiveData);
-
-    const deviceToClose = hidDevice;
-    hidDevice = null;
-
-    try {
-      await deviceToClose.close();
-    } catch (error) {
-      console.log('HID close error');
-      console.log(error);
-    }
-  }
-}
-
-
+console.log('usb library handle attach deatch')
+usb.on('attach',deviceAttached);// chec kif device was attached
+usb.on('detach',deviceDetach);//check if device was detached
 // deviceConnected(); //check if device is already connected
 
 function deviceConnected(){
@@ -135,16 +88,9 @@ function deviceDetach(device:any){
 }
 
 async function fUsbConnect(){
-  if (hidDevice) {
-   return;
-  }
-
    /* start usb functions*/
    let hidDevices = await HID.devices();
    let sPath = findDevicePath(hidDevices,22288,1155,1);
-  if (!sPath) {
-   return;
-  }
    hidDevice = await HID.HIDAsync.open(sPath);
    console.log('connected');
    store.dispatch(deviceIsConnected());
@@ -155,10 +101,6 @@ async function fUsbConnect(){
 }
 
 function fUsbDisconnect(): void{
-  if(hidDevice){
-    hidDevice.removeListener('error',fHidError);
-    hidDevice.removeListener('data',fHidReceiveData);
-  }
   hidDevice =null;
   console.log('disconnected');
 }
@@ -363,6 +305,6 @@ function fHidSendBackButton(backButton:boolean=true){
 // function fHidSendKey
 
 
-const usbManager = {fUsbManager,fHidSend,fUsbConnect,fUsbDisconnect,fHidSendImage,fHidSendImage2,fHidSendImage3,fHidSendEmptyImage,fHidSendBackButton,shutdown};
+const usbManager = {fUsbManager,fHidSend,fUsbConnect,fUsbDisconnect,fHidSendImage,fHidSendImage2,fHidSendImage3,fHidSendEmptyImage,fHidSendBackButton};
 
 export default usbManager;

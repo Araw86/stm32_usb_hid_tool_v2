@@ -46,16 +46,6 @@ electronDl();
 storeIcons.initStoreIcons();
 
 let win: BrowserWindow | null;
-let isShuttingDown = false;
-
-async function shutdownAppResources(): Promise<void> {
-  if (isShuttingDown) {
-    return;
-  }
-
-  isShuttingDown = true;
-  await usbManager.shutdown();
-}
 
 
 async function createWindow() {
@@ -81,16 +71,6 @@ async function createWindow() {
   });
 
   usbManager.fUsbManager();
-
-  win.on('closed', () => {
-    win = null;
-
-    if (process.platform !== 'darwin') {
-      void shutdownAppResources().finally(() => {
-        app.quit();
-      });
-    }
-  });
 
   // Menu.setApplicationMenu(menu)
   if (!app.isPackaged) {
@@ -265,21 +245,8 @@ app.on('window-all-closed', function () {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
-    void shutdownAppResources().finally(() => {
-      app.quit()
-    })
+    app.quit()
   }
-});
-
-app.on('before-quit', (event) => {
-  if (isShuttingDown) {
-    return;
-  }
-
-  event.preventDefault();
-  void shutdownAppResources().finally(() => {
-    app.quit();
-  });
 });
 
 app.on('activate', function () {
